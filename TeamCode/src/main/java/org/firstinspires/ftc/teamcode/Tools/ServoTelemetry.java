@@ -5,13 +5,13 @@ ADD 'acmerobotics' INSIDE 'build.dependencies.gradle',
 CHECK THE 'IntoTheDeep2' REPO FOR A BETTER IDEA OF WHAT TO DO,
 ASK MR. CONNER FOR ADDITIONAL HELP
 (SINCE LAST YEAR HE SAID HE HAD TO CHANGE SOME WEIRD NUMBERS ALSO TO GET IT TO WORK)
-*/
+*/// This is what I think I did.
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
-//import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.FtcDashboard;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @TeleOp(name = "ServoTelemetry", group = "Tools")
@@ -21,8 +21,12 @@ public class ServoTelemetry extends LinearOpMode {
     public void runOpMode() {
         Servo servo = hardwareMap.get(Servo.class, "arm_servo");
 
+        // Set up FtcDashboard telemetry
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        Telemetry dashboardTelemetry = dashboard.getTelemetry();
+
         while (!isStarted()) {
-            
+
         }
 
         // Keeps track of servo position...
@@ -62,6 +66,7 @@ public class ServoTelemetry extends LinearOpMode {
             largeButtonEcho = largeButtonPress;
 
             servo.setPosition(servoPosition); // Sets the servo position...
+
             telemetry.addData("Servo Position: %.2f", servoPosition); // I think this'll print correctly...
             telemetry.update();
         }
