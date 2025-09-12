@@ -1,11 +1,13 @@
 repositories {
     mavenCentral()
     google() // Needed for androidx
-    maven { url = 'https://maven.brott.dev/' }
+
+    maven { url = 'https://maven.brott.dev/' } // amcrobotics
+    maven { url= "https://maven.pedropathing.com/" } // pedropathing
+    maven { url = "https://mymaven.bylazar.com/releases" } // pedropathing tuning
 }
 
 dependencies {
-    implementation 'com.acmerobotics.dashboard:dashboard:0.4.16'
     implementation 'org.firstinspires.ftc:Inspection:10.3.0'
     implementation 'org.firstinspires.ftc:Blocks:10.3.0'
     implementation 'org.firstinspires.ftc:RobotCore:10.3.0'
@@ -14,7 +16,15 @@ dependencies {
     implementation 'org.firstinspires.ftc:Hardware:10.3.0'
     implementation 'org.firstinspires.ftc:FtcCommon:10.3.0'
     implementation 'org.firstinspires.ftc:Vision:10.3.0'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+
+    // pedropathing
+    implementation 'com.pedropathing:ftc:2.0.1'
+    implementation 'com.pedropathing:telemetry:0.0.6'
+
+    // pedropathing tuning
+    implementation 'com.bylazar:fullpanels:1.0.2'
+
+    // amcrobotics
+    implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'com.acmerobotics.dashboard:dashboard:0.4.16'
 }
-
