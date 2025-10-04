@@ -33,7 +33,7 @@ public class FlywheelTest extends LinearOpMode {
             boolean reset = gamepad1.b;
 
             if (sweep) {
-                sweepServo.setPosition(1);
+                sweepServo.setPosition(0.3);
             } else if (reset) {
                 sweepServo.setPosition(0);
             }
