@@ -22,7 +22,8 @@ public class FlywheelTest extends LinearOpMode {
         leftFlywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFlywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        Servo sweepServo = hardwareMap.get(Servo.class, "sweep_servo");
+        Servo leftFlap = hardwareMap.get(Servo.class, "left_flap");
+        Servo rightFlap = hardwareMap.get(Servo.class, "right_flap");
 
         while (!isStarted()) {
 
@@ -33,9 +34,11 @@ public class FlywheelTest extends LinearOpMode {
             boolean reset = gamepad1.b;
 
             if (sweep) {
-                sweepServo.setPosition(0.3);
+                leftFlap.setPosition(0.25);
+                rightFlap.setPosition(0.75);
             } else if (reset) {
-                sweepServo.setPosition(0);
+                leftFlap.setPosition(0);
+                rightFlap.setPosition(1.0);
             }
 
             leftFlywheel.setPower(1.0);
