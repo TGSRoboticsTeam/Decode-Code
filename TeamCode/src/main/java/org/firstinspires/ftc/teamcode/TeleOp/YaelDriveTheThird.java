@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
 //import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -53,13 +54,17 @@ public class YaelDriveTheThird extends LinearOpMode {
 
         Servo leftFlap = hardwareMap.get(Servo.class, "left_flap");
         Servo rightFlap = hardwareMap.get(Servo.class, "right_flap");
-        // Set up FtcDashboard telemetry
-        //FtcDashboard dashboard = FtcDashboard.getInstance();
-        //Telemetry dashboardTelemetry = dashboard.getTelemetry();
+
+        Servo turretServo = hardwareMap.get(Servo.class, "turret_servo");
+        /*Set up FtcDashboard telemetry;
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        Telemetry dashboardTelemetry = dashboard.getTelemetry(); //*/
 
         double changeInSpeed = 0.35;
         boolean spinFlywheels = false;
         int flapTimer = 0;
+        int shotsLeft = 0; // Used in rapid fire
+        double turretTilt = 0.0;
 
         // Retrieve the IMU from the hardware map
         IMU imu = hardwareMap.get(IMU.class, "imu");
@@ -75,9 +80,20 @@ public class YaelDriveTheThird extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
+            // Define constants
+            int loadBallTicks = 50;
+            int resetFlapTicks = 100;
+
+            double maxTurretTilt = 0.0;
+            double minTurretTilt = 1.5;
+            double turretTiltStep = 0.02;
+
             // Define joystick controls
             boolean startSpinning = gamepad1.left_trigger > 0.2;
             boolean stopSpinning = gamepad1.right_trigger > 0.2;
+
+            boolean tiltUp = gamepad1.dpad_up;
+            boolean tiltDown = gamepad1.dpad_down;
 
             boolean flipFlap = gamepad1.a;
 
@@ -88,7 +104,7 @@ public class YaelDriveTheThird extends LinearOpMode {
 
             boolean slowDown = gamepad1.right_bumper;
 
-            if (gamepad1.dpad_up) {
+            if (gamepad1.dpad_right) {
                 imu.resetYaw();
             }
 
@@ -97,7 +113,7 @@ public class YaelDriveTheThird extends LinearOpMode {
             // Rotate the movement direction counter to the bots rotation
             double strafe = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
             double drive = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-            strafe = -strafe; // here's the strafe inversion
+            //strafe = -strafe; // here's the strafe inversion
 
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio, but only when
@@ -138,8 +154,10 @@ public class YaelDriveTheThird extends LinearOpMode {
             //////////////// OTHER COMPONENTS //////////////////
             // Spinners
             if (stopSpinning) {
+                shotsLeft = 0;
                 spinFlywheels = false;
             } else if (startSpinning) {
+                shotsLeft = 3;
                 spinFlywheels = true;
             }
 
@@ -153,18 +171,33 @@ public class YaelDriveTheThird extends LinearOpMode {
 
             // Flap
             if (flipFlap) {
-                flapTimer = 1000;
+                flapTimer = loadBallTicks;
             }
 
-            if (flapTimer > 0) {
+            if (flapTimer > 0) { // Has just been told to flip
                 flapTimer -= 1;
                 leftFlap.setPosition(0.25);
-                rightFlap.setPosition(0.75);
-            } else {
+                rightFlap.setPosition(0.75); // Add a /* here to comment out rapid fire.
+            /*} else if (flapTimer > -resetFlapTicks && shotsLeft > 0) { // Give it time to reset flap, if you still want to flip
+                flapTimer -= 1;
+                leftFlap.setPosition(0);
+                rightFlap.setPosition(1.0);
+            } else if (shotsLeft > 0) { // Reset timer, reduce the number of shots left
+                shotsLeft -= 1;
+                flapTimer = loadBallTicks; //*/
+            } else { // Timer has run out and you want it to reset
                 leftFlap.setPosition(0);
                 rightFlap.setPosition(1.0);
             }
 
+            // Turret up/down tilt
+            if (tiltDown && turretTilt > minTurretTilt) {
+                turretTilt -= turretTiltStep;
+            } else if (tiltUp && turretTilt < maxTurretTilt) {
+                turretTilt += turretTiltStep;
+            }
+
+            turretServo.setPosition(turretTilt);
             ////////////// TELEMETRY //////////////
             /*telemetry.addData("Linear Slide", linearSlide.getCurrentPosition());
 
@@ -172,7 +205,13 @@ public class YaelDriveTheThird extends LinearOpMode {
             telemetry.addData("Pitch (X)", "%.2f", orientation.getPitch(AngleUnit.DEGREES));
             telemetry.addData("Roll (Y)", "%.2f", orientation.getRoll(AngleUnit.DEGREES));
             telemetry.addData("Yaw (Z)", "%.2f", orientation.getYaw(AngleUnit.DEGREES));
-            telemetry.update();*/
+
+            telemetry.addData("Shots Left)", "%.2f", shotsLeft);
+            telemetry.update(); //*/
         }
     }
 }
+
+/*public int secondsToTicks(int seconds) {
+    return seconds * 1000 / 5;
+}*/
