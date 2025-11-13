@@ -84,8 +84,8 @@ public class YaelDriveTheThird extends LinearOpMode {
             int loadBallTicks = 50;
             int resetFlapTicks = 100;
 
-            double maxTurretTilt = 0.0;
-            double minTurretTilt = 1.5;
+            double maxTurretTilt = 1.0;
+            double minTurretTilt = 0.0;
             double turretTiltStep = 0.02;
 
             // Define joystick controls
